@@ -1,0 +1,32 @@
+---
+import { getCollection } from "astro:content";
+
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+//todo: 显示数量 角标
+const allPosts = await getCollection("docs");
+const tags = allPosts.flatMap((post) => post.data.tags).filter(Boolean);
+const tagMap = tags.reduce((m, tag) => {
+	return m.set(tag, (m.get(tag) || 0) + 1);
+}, new Map());
+//const uniqueTags = [...new Set(tags)] as string[]; // replaced by tagMap.keys()
+
+import Tag from "@/compsForDocs/Tag.astro";
+---
+
+<StarlightPage frontmatter={{title: 'Tags',tableOfContents:false}}>
+  <div class="not-content">
+    <div class="flex gap-4 ">
+      <!-- 还可以Array.from(tagMap).map(([tag,count]) => <Tag count={count}>{tag}</Tag>) -->
+      {()=>{
+        const ret =[]
+        for (const [tag,count] of tagMap) {
+        ret.push( <Tag count={count}>{<a href={`/blog/tags/${tag}`}>{tag} </a>}</Tag>)
+        }
+        return ret;
+       }
+      }
+    </div>
+  </div>
+
+</StarlightPage>

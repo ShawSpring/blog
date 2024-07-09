@@ -1,0 +1,72 @@
+---
+title: Effect与闭包
+description: 关于effect和闭包的学习
+tags: ['react','useEffect']
+---
+
+
+
+
+```tsx
+function ClosureDemo() {
+	const [count, setCount] = useState(0);
+	console.log("render ClosureDemo");
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		const interval = setInterval(() => {
+            console.log('interval with count = ',count) // 2
+			setCount(count + 1);
+		}, 1000);
+	}, []);
+	return (
+		<div>
+			<h2>Closure Demo</h2>
+			<p className="py-2 w-32 mx-auto border border-teal-700 text-slate-900 bg-slate-100">
+				{count}
+			</p>
+		</div>
+	);
+}
+```
+结果： `{count}`始终为 2 或 3  ❌
+
+1. effect只会在组件挂载和卸载时执行，不会在每次渲染时执行。
+2. effect中更改状态，触发组件重新渲染，而effect不会再次执行，因为没有依赖变更。
+3. 开发时会组件都会创建销毁再创建
+4. interval没有清理，所有同时有两个interval在执行，他们闭包里的cout分别为1和2,所以`setCount(count+1)`变为2或3
+5. **interval中的回调形成了闭包**，它绑定了外部的变量count，不会访问最新的count.
+
+```diff
+	useEffect(() => {
+		console.log("effect executed"); // log twice
+		const interval = setInterval(() => {
+			console.log("interval with count = ", count); // 0
+			setCount(count + 1);
+		}, 1000);
++		return () => clearInterval(interval);
+	}, []);
+```
+结果:  `{count}`始终为 1  ❌  
+
+清理effect后，interval只有一个在执行，每次`setCount`触发重新渲染后effect还是组件创建时的那个， 闭包中的`count`为0，
+所以`setCount(count+1)`始终为1
+
+
+```diff
+	useEffect(() => {
+		const interval = setInterval(() => {
+			console.log("interval with count = ", count);
+			setCount(count + 1);
+		}, 1000);
+		return () => clearInterval(interval);
+	},
++     [count]);
+```
+结果:  `{count}`正常递增   ✅  
+ 
+1. 每次`setCount`触发重新渲染后，effect也会因为依赖变更而重新执行，`interval`也会重新创建。
+2. 每次新的`interval`里得到新的`count`值，所以`{count}`能递增。
+3. 每次都重新`setInterval`,开销大，而且时间间隔不准，不符合语义。  ❌  
+
+
+### 使用

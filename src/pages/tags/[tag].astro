@@ -1,0 +1,32 @@
+---
+import type { GetStaticPaths } from "astro";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { getCollection } from "astro:content";
+
+export const prerender = true;
+export const getStaticPaths = (async () => {
+	const allposts = await getCollection("docs");
+	const uniqueTags = [
+		...new Set(allposts.flatMap((post) => post.data.tags).filter(Boolean)),
+	] as string[];
+
+	return uniqueTags.map((tag) => {
+		const filteredPosts = allposts.filter((post) =>
+			post.data.tags?.includes(tag),
+		);
+		return { params: { tag }, props: { posts: filteredPosts } };
+	});
+}) satisfies GetStaticPaths;
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+
+import { LinkCard, CardGrid } from "@astrojs/starlight/components";
+---
+
+<StarlightPage frontmatter={{title: `tag: ${tag}`, tableOfContents: false}}>
+  <p>包含tag <code> {tag} </code> 的文章</p>
+  <CardGrid>
+    {posts.map((post) => <LinkCard description={post.data.description} title={post.data.title} href={`/blog/${post.slug}`} />)}
+  </CardGrid>
+</StarlightPage>

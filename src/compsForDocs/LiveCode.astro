@@ -1,0 +1,94 @@
+---
+// customize live-code layout
+// https://astro-live-code.mattjennin.gs/guides/customization/
+// console.log(Astro.props);
+import { Icon } from '@astrojs/starlight/components';
+---
+
+<div class="live-code-layout relative">
+  <!-- source code -->
+  <slot name="code" />
+  <!-- .not-content 不受 Starlight 默认内容样式的影响。 -->
+  <div class="example-container not-content bg-base-300">
+    <div>
+      <!-- eval components -->
+      <slot name="example" />
+    </div>
+  </div>
+  <button
+  title="expand code"
+    class="btn-source-code hover:ring-1 hover:text-sky-500 active:scale-95 text-sky-800 _dark:text-sky-200"
+    aria-label="Source Code">
+    <Icon class="w-8 h-8" name="seti:html" />
+  </button>
+</div>
+
+<style>
+
+  .btn-source-code {
+    position: absolute;
+    top: 0;
+    margin: 0rem !important;
+    right: 0;
+    z-index: 10;
+    cursor: pointer;
+    background-color: transparent;
+    padding:0 0.5rem;
+    border-top-right-radius: 0.5rem;
+  }
+  .live-code-layout {
+    display: flex;
+    flex-direction: column;
+    border-color: var(--ec-brdCol, var(--sl-color-gray-5));
+  }
+  .example-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2.5rem;
+    margin-top: 0 !important;
+    /* background: var(--ec-frm-edBg, var(--astro-code-color-background)); */
+    border-style: solid;
+    border-width: var(--ec-brdWd, 1px);
+    border-color: var(--ec-brdCol, var(--sl-color-gray-5));
+    border-top: none;
+    border-radius: 0 0 0.5rem 0.5rem;
+  }
+  /* 本组件外的选择器记得套上:global */
+  :global([data-theme='dark']) .example-container{
+    --ec-brdCol: #4b5643;
+  }
+
+  .live-code-layout :global(.expressive-code figcaption.header) {
+    border-radius: 0.5rem 0.5rem 0 0;
+    border-bottom-width: 1px;
+    /* border-color: var(--ec-brdCol, var(--sl-color-gray-5)); */
+    box-shadow: 0 -1px 1px 1px var(--ec-brdCol, var(--sl-color-gray-5));
+  }
+
+  .live-code-layout :global(.expressive-code pre) {
+    transition: 0.3s ease-in;
+    height: 0px;
+  }
+  .live-code-layout :global(.expressive-code pre.reveal) {
+    height: var(--pre-height, auto);
+  }
+</style>
+
+<script>
+  const liveCodes = document.querySelectorAll('.live-code-layout');
+  liveCodes.forEach((liveCode) => {
+    const btn = liveCode.querySelector('.btn-source-code');
+    const pre = liveCode.querySelector('pre');
+    if (!pre) return;
+    pre.style.height = 'auto';
+    const h = pre.offsetHeight;
+    pre.style.setProperty('--pre-height', `${h}px`);
+    pre.style.removeProperty('height'); // remove inline style, don't influence the class
+
+    btn?.addEventListener('click', () => {
+      pre.classList.toggle('reveal');
+    });
+  });
+
+</script>

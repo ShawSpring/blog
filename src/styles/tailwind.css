@@ -1,0 +1,33 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer base {
+    html{
+        scroll-behavior: smooth;
+    }
+    .hero img{
+        width:16rem;
+        height: 16rem;
+    }
+}
+.site-title{
+    gap:0.5rem;
+    img{
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}
+a._heading-anchor{
+    text-decoration-line: none;
+    width: 2.5rem;
+    padding-right: 0;
+    margin-left: -1.5rem;
+    margin-right: 0.25rem;
+    display: inline-flex;
+    justify-content: end;
+    visibility: hidden;
+}
+:where(h1,h2,h3,h4,h5,h6):hover a._heading-anchor{
+    visibility: inherit;
+}

@@ -1,0 +1,29 @@
+---
+interface Props {
+	count?: number;
+}
+---
+
+<div class="relative py-2 px-4 border border-stone-500 rounded-md block hover:ring-1 active:scale-95 count\
+ after:bg-emerald-700 after:text-slate-200 shadow-inner shadow-cyan-300/50 dark:shadow-cyan-700/50"
+data-count={Astro.props.count?.toString()}>
+<slot/>
+</div>
+
+
+<style>
+div.count::after{
+    content: attr(data-count);
+    /* display: block; */
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    font-size: smaller;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+</style>
