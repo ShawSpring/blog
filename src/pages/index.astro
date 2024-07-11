@@ -1,0 +1,69 @@
+---
+// override content/docs/index.mdx 
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import img from "@/assets/ss.png";
+---
+
+<StarlightPage frontmatter={{ title: 'ShawSpring\'s Blog',
+template: 'splash',
+description: 'ShawSpring\'s Blog | ShawSpring的个人博客',
+hero:{
+    tagline: 'ShawSpring的个人博客',
+    image: {
+        file: img,
+    },
+    actions: [
+        {
+            text: 'Welcome',
+            link: '/blog/react/effect与闭包/',
+            icon: 'right-arrow',
+            variant: 'primary',
+        },
+        // {
+        //   text: 'Read the Starlight docs',
+        //   link: 'https://starlight.astro.build',
+        //   icon: 'external',
+        //   variant: 'secondary',
+        // },
+    ],
+}
+}} hasSidebar={false}>
+<div class="custom-shape-divider-top-1720673859">
+    <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+        <path d="M1200,0H0V120H281.94C572.9,116.24,602.45,3.86,602.45,3.86h0S632,116.24,923,120h277Z" class="shape-fill"></path>
+    </svg>
+</div>
+</StarlightPage>
+
+<style is:global>
+    body{
+        position: relative;
+        --sl-color-bg-nav: #cca8b0;
+        background-image: linear-gradient(180deg, #eab6ba, #c1aaae, #a6b2b8, #a0b6c2)
+    }
+    [data-theme="dark"] body{
+        --sl-color-bg-nav: #3b464aa2;
+        background-image: linear-gradient(180deg, #07363d, #565555, #99736d, #de9387)
+    }
+    .custom-shape-divider-top-1720673859 {
+        z-index: -10;
+    position: absolute;
+    /* top: 0; */
+    top: var(--sl-nav-height);
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.custom-shape-divider-top-1720673859 svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 100px;
+}
+
+.custom-shape-divider-top-1720673859 .shape-fill {
+    fill: var(--sl-color-bg-nav);
+}
+</style>
