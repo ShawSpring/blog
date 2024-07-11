@@ -47,6 +47,7 @@ export default defineConfig({
     logo:{
       src:resolvePath("./src/assets/ss.png"),
     },
+    tableOfContents: false,
     favicon:"/ss.png",
     lastUpdated:true,
     editLink: {
@@ -59,18 +60,6 @@ export default defineConfig({
       autogenerate:{
         directory: "react"
       }
-      // items: [
-      // // Each item here is one entry in the navigation menu.
-      // {
-      //   label: "Example Guide",
-      //   link: "/guides/example/"
-      // }, {
-      //   label: "Components",
-      //   link: "/guides/components/"
-      // }, {
-      //   label: "Expressive Code",
-      //   link: "/guides/expressive-code/"
-      // }]
     }, {
       label: "Reference",
       autogenerate: {
@@ -79,8 +68,11 @@ export default defineConfig({
     },
     {
       label: "tags",
-      link:"/tags/"
+      link:"/tags/",
     }],
+    components:{
+      MarkdownContent:resolvePath("./src/compsForDocs/MarkdownContent.astro"),
+    },
     expressiveCode:{
       // themes: ['github-light-default', 'github-dark-default'],
       themes:['rose-pine-dawn','rose-pine'],

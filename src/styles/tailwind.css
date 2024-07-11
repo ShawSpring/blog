@@ -19,6 +19,11 @@
         
     }
 }
+
+:root{
+    /* max-with of content*/
+    --sl-content-width:56rem;
+}
 .site-title{
     gap:0.5rem;
     img{
