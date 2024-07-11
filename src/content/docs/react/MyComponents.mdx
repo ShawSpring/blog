@@ -4,22 +4,21 @@ tags: ["react", "learning"]
 ---
 
 
-## [Astro Live Code](https://astro-live-code.mattjennin.gs/)
+### [Astro Live Code](https://astro-live-code.mattjennin.gs/)
 
 
 ```html live title="hello world"
 <button class="text-emerald-700 bg-slate-200 rounded-md cursor-pointer">hello world</button>
 ```
 
-```tsx live {5} title = "react comp"
-import ReactComp from "@/components/ReactComp"
-const  text:string = "hello world"
-export default () => {
-    return <>
-      <ReactComp title={text}/>
-    </>
-}
-```
+### React Component
+
+这是个react组件，点击增加count:  
+
+import Count from "@/components/Count"
+
+<Count client:click />
+
 
 ### 第三级标题
 三生三世

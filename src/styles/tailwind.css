@@ -9,6 +9,14 @@
     .hero img{
         width:16rem;
         height: 16rem;
+        animation-fill-mode: both;
+    }
+    button{
+        padding:0.5rem 1rem;
+        border-radius: 0.25rem;
+        border: 1px solid;
+        cursor: pointer;
+        
     }
 }
 .site-title{
@@ -19,14 +27,16 @@
     }
 }
 a._heading-anchor{
+    vertical-align: text-bottom;
+    margin-bottom: 0.1em;
     text-decoration-line: none;
-    width: 2.5rem;
-    padding-right: 0;
-    margin-left: -1.5rem;
-    margin-right: 0.25rem;
-    display: inline-flex;
-    justify-content: end;
+    margin-left: 0.25em;
+    display: inline-block;
     visibility: hidden;
+    svg{
+        height: 1em;
+        width: 1em;
+    }
 }
 :where(h1,h2,h3,h4,h5,h6):hover a._heading-anchor{
     visibility: inherit;

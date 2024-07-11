@@ -1,72 +1,194 @@
 ---
 title: Effect与闭包
 description: 关于effect和闭包的学习
-tags: ['react','useEffect']
+tags: ['react','useEffect','closure']
 ---
 
 
+### 闭包导致effect拿不到最新状态
 
-
-```tsx
-function ClosureDemo() {
+```tsx live title='closure demo'
+import { useState, useEffect } from "react";
+export default function ClosureDemo() {
 	const [count, setCount] = useState(0);
-	console.log("render ClosureDemo");
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const interval = setInterval(() => {
-            console.log('interval with count = ',count) // 2
 			setCount(count + 1);
 		}, 1000);
 	}, []);
 	return (
 		<div>
-			<h2>Closure Demo</h2>
-			<p className="py-2 w-32 mx-auto border border-teal-700 text-slate-900 bg-slate-100">
+			<p className="py-2 w-32 mx-auto border border-teal-700 text-center">
 				{count}
 			</p>
 		</div>
 	);
 }
 ```
-结果： `{count}`始终为 2 或 3  ❌
 
+ `{count}`始终为 1  ❌
+
+**why** 
 1. effect只会在组件挂载和卸载时执行，不会在每次渲染时执行。
 2. effect中更改状态，触发组件重新渲染，而effect不会再次执行，因为没有依赖变更。
-3. 开发时会组件都会创建销毁再创建
-4. interval没有清理，所有同时有两个interval在执行，他们闭包里的cout分别为1和2,所以`setCount(count+1)`变为2或3
-5. **interval中的回调形成了闭包**，它绑定了外部的变量count，不会访问最新的count.
+3. 开发时会组件都会创建销毁再创建,而没有清理effect，会让结果变得不可预料。
+4. **interval中的回调形成了闭包**，它绑定了外部的变量count，不会访问最新的count.
+5. interval回调内的count始终为0，因此`setCount(count + 1);`始终为1
 
-```diff
+  
+
+  
+```diff lang='tsx' title='添加effect清理'
 	useEffect(() => {
-		console.log("effect executed"); // log twice
 		const interval = setInterval(() => {
-			console.log("interval with count = ", count); // 0
 			setCount(count + 1);
 		}, 1000);
 +		return () => clearInterval(interval);
 	}, []);
 ```
-结果:  `{count}`始终为 1  ❌  
-
-清理effect后，interval只有一个在执行，每次`setCount`触发重新渲染后effect还是组件创建时的那个， 闭包中的`count`为0，
-所以`setCount(count+1)`始终为1
+`{count}`始终为 1  ❌  
+同上，不过更健壮，销毁再创建也ok. 
 
 
-```diff
+### 函数式更新不再闭包
+
+```tsx {7} live title='setState函数式更新'
+import { useState, useEffect } from "react";
+export default function ClosureDemo() {
+	const [count, setCount] = useState(0);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		const interval = setInterval(() => {
-			console.log("interval with count = ", count);
-			setCount(count + 1);
+			setCount(c=>c+1);
 		}, 1000);
 		return () => clearInterval(interval);
-	},
-+     [count]);
+	}, []);
+	return (
+		<div>
+			<p className="py-2 w-32 mx-auto border border-teal-700 text-center">
+				{count}
+			</p>
+		</div>
+	);
+}
 ```
-结果:  `{count}`正常递增   ✅  
+`{count}`正常递增   ✅  
  
-1. 每次`setCount`触发重新渲染后，effect也会因为依赖变更而重新执行，`interval`也会重新创建。
-2. 每次新的`interval`里得到新的`count`值，所以`{count}`能递增。
-3. 每次都重新`setInterval`,开销大，而且时间间隔不准，不符合语义。  ❌  
+更新函数只保存了计算逻辑，下次渲染时，获取当前状态为参数进行计算，因此能够正常递增。
+<br/>
+
+<details>
+
+<summary>更新函数与直接替换的对比</summary>
+
+```tsx {6} live title='多次使用更新函数' props={{reveal:true}}
+import { useState } from 'react';
+export default function Counter1() {
+  const [age, setAge] = useState(10);
+
+  function increment() {
+    setAge(a => a + 1);
+  }
+  return (
+    <>
+      <h1>Your age: {age}</h1>
+      <button onClick={() => {
+        increment();
+        increment();
+        increment();
+      }}>+3</button>
+      <button onClick={() => {
+        increment();
+      }}>+1</button>
+    </>
+  );
+}
+```
+
+```tsx {6} live title='多次直接替换' props={{reveal:true}}
+import { useState } from 'react';
+export default function Counter2() {
+  const [age, setAge] = useState(10);
+
+  function increment() {
+     setAge(age + 1);
+  }
+  return (
+    <>
+      <h1>Your age: {age}</h1>
+      <button onClick={() => {
+        increment();
+        increment();
+        increment();
+      }}>+3</button>
+      <button onClick={() => {
+        increment();
+      }}>+1</button>
+    </>
+  );
+}
+```
+</details>
 
 
-### 使用
+
+```tsx {9} live title='effect 依赖'
+import { useState, useEffect } from "react";
+export default function ClosureDemo() {
+	const [count, setCount] = useState(0);
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setCount(count + 1);
+		}, 1000);
+    return () => clearInterval(interval);
+	}, [count]);
+	return (
+		<div>
+			<p className="py-2 w-32 mx-auto border border-teal-700 text-center">
+				{count}
+			</p>
+		</div>
+	);
+}
+```
+
+`{count}`正常递增   ✅   但是：
+:::caution[interval会不断重新创建]
+setCount变更转态 -> 重新渲染 -> 依赖变化清理effect -> 重新执行effect -> 重新`setInterval` 
+:::
+
+
+### 使用 `useRef`
+
+```tsx {5,8} live title='useRef'
+import { useState, useEffect,useRef } from "react";
+export default function Demo() {
+	const [count, setCount] = useState(0);
+  const countRef = useRef(0);
+  countRef.current = count //每次重新渲染都会指向最新的count, ref本身却是固定的。
+	useEffect(() => {
+		const interval = setInterval(() => {
+      setCount(countRef.current+1); 
+      // countRef.current++; // ref不是响应式，不会触发重新渲染
+		}, 1000);
+    return () => clearInterval(interval);
+	}, []);
+	return (
+		<div>
+			<p className="py-2 w-32 mx-auto border border-teal-700 text-center">
+				{count}
+			</p>
+		</div>
+	);
+}
+```
+
+:::note 
+使用 ref 可以确保：
+
+- 可以在重新渲染之间 存储信息（普通对象存储的值每次渲染都会重置）。
+- 改变它 不会触发重新渲染（state变量会触发重新渲染）。
+- 对于组件的每个副本而言，这些信息都是本地的（外部变量则是共享的）。
+
+:::

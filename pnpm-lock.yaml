@@ -32,6 +32,9 @@ importers:
       astro-live-code:
         specifier: ^0.0.2
         version: 0.0.2
+      hastscript:
+        specifier: ^9.0.0
+        version: 9.0.0
       react:
         specifier: ^18.3.1
         version: 18.3.1

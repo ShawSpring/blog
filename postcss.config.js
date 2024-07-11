@@ -5,7 +5,7 @@ export default ({ env }) => {
       // "postcss-import": {},
       // tailwindcss: {},
       // postcss-preset-env 包含了postcss-nested和autoprefixer
-      "postcss-preset-env": { },
+      "postcss-preset-env": env==="production" ? {} : false,
     },
   }
 };

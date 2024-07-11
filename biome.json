@@ -5,11 +5,15 @@
 	},
 	"files": {
 		"include": ["src/**/*"],
-		"ignore": ["node_modules/**/*"]
+		"ignore": ["node_modules/**/*","dist/**/*"]
 	},
 	"linter": {
 		"enabled": true,
 		"rules": {
+			"a11y":{
+				"useButtonType": "off"
+			},
+			
 			"recommended": true
 		}
 	}

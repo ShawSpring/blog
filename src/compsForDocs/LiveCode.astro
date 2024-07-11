@@ -1,11 +1,32 @@
 ---
 // customize live-code layout
 // https://astro-live-code.mattjennin.gs/guides/customization/
-// console.log(Astro.props);
-import { Icon } from '@astrojs/starlight/components';
+interface Props {
+  // The language of the code block
+  lang: string
+  // The filename of the mdx file
+  filename: string
+  // The props being passed to the component from props={{ ... }}
+  componentProps: {
+    [key: string]: unknown
+    /**
+     * If true, the source code will be revealed
+     * @example 
+     * ````md
+     * ```tsx live  props={{reveal:true}}
+     * ````
+     */
+    reveal?: boolean;
+  }
+}
+
+const {componentProps} = Astro.props
+
+import { Icon } from "@astrojs/starlight/components";
+
 ---
 
-<div class="live-code-layout relative">
+<div class:list={["live-code-layout relative",{reveal:componentProps?.reveal}]}>
   <!-- source code -->
   <slot name="code" />
   <!-- .not-content 不受 Starlight 默认内容样式的影响。 -->
@@ -70,25 +91,27 @@ import { Icon } from '@astrojs/starlight/components';
     transition: 0.3s ease-in;
     height: 0px;
   }
-  .live-code-layout :global(.expressive-code pre.reveal) {
+  .live-code-layout.reveal :global(.expressive-code pre) {
     height: var(--pre-height, auto);
   }
 </style>
 
 <script>
-  const liveCodes = document.querySelectorAll('.live-code-layout');
-  liveCodes.forEach((liveCode) => {
-    const btn = liveCode.querySelector('.btn-source-code');
-    const pre = liveCode.querySelector('pre');
-    if (!pre) return;
-    pre.style.height = 'auto';
-    const h = pre.offsetHeight;
-    pre.style.setProperty('--pre-height', `${h}px`);
-    pre.style.removeProperty('height'); // remove inline style, don't influence the class
+  window.addEventListener('DOMContentLoaded', () => {
+    const liveCodes = document.querySelectorAll('.live-code-layout');
+    liveCodes.forEach((liveCode) => {
+      const btn = liveCode.querySelector('.btn-source-code');
+      const pre = liveCode.querySelector('pre');
+      if (!pre) return;
+      pre.style.height = 'auto';
+      const h = pre.offsetHeight;
+      pre.style.setProperty('--pre-height', `${h}px`);
+      pre.style.removeProperty('height'); // remove inline style, don't influence the class
 
-    btn?.addEventListener('click', () => {
-      pre.classList.toggle('reveal');
-    });
+      btn?.addEventListener('click', () => {
+        liveCode.classList.toggle('reveal');
+      });
   });
+})
 
 </script>
