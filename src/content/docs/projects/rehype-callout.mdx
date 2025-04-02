@@ -1,0 +1,34 @@
+---
+title: rehype-callout
+description: A rehype plugin to parse Obsidian callouts      
+tags: ['rehype','obsidian','callout']
+---
+
+
+### callout types
+
+[rehype-callout](https://github.com/ShawSpring/rehype-callout) 
+
+
+> [!tip]  🥰 trailing whitespace  
+> Line break in Markdown is "two or more spaces at the end of the line".
+
+
+> [!example]+ details and summary under the hood.  
+>   🥰  🧐
+
+
+>[!note] outer title  
+> outer content
+> >[!success] nested callout  
+> > nested content
+
+
+>[!note] outer title  
+> outer content
+> >[!check] nested code block
+> > ```js
+> > const a = 1;
+>> console.log( a + 100);
+> > ```
+> > code block can be hightlighted by other rehype plugins.

@@ -7,11 +7,27 @@ const { tags } = Astro.props.entry.data;
 {tags&&tags.length>0&&<div class="flex gap-4 -mt-2 mb-8">
   <span>Tags:</span>  
   {tags.map(tag=>{
-      return <div class="relative cursor-pointer py-1 px-2 text-sm border border-stone-500 rounded-md block hover:ring-1 active:scale-95 \
-            shadow-inner shadow-cyan-200/50 dark:shadow-cyan-800/50">
+      return <div class=" relative cursor-pointer py-1 px-2 text-sm border border-stone-500 rounded-md block hover:ring-1 active:scale-95 \
+            shadow shadow-cyan-200/50 dark:shadow-cyan-800/50">
                 <a href={`/blog/tags/${tag}`}>{tag} </a> 
             </div>
     })}
     </div>}
     <hr/>
   <div class="sl-markdown-content"><slot /></div>
+
+  <!-- <script is:inline>
+  function calloutTitleClick(event) {
+        const contentWrapper = event.currentTarget.nextElementSibling;
+        // contentWrapper.classList.toggle("expanded");
+        if(window.getComputedStyle(contentWrapper).height === '0px') {
+          contentWrapper.style.height = 'auto';
+          const h = contentWrapper.offsetHeight;
+          contentWrapper.style.height = '0px';
+          contentWrapper.offsetHeight;
+          contentWrapper.style.height = h+'px';
+        }else{
+          contentWrapper.style.height = '0px';
+        }
+      }
+  </script> -->

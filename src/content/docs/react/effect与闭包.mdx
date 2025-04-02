@@ -1,7 +1,7 @@
 ---
 title: Effect与闭包
 description: 关于effect和闭包的学习 
-tags: ['react','useEffect','closure']
+tags: ['react','useEffect','closure','useRef']
 ---
 
 
@@ -165,11 +165,11 @@ setCount变更转态 -> 重新渲染 -> 依赖变化清理effect -> 重新执行
 import { useState, useEffect,useRef } from "react";
 export default function Demo() {
 	const [count, setCount] = useState(0);
-  const countRef = useRef(0);
-  countRef.current = count //每次重新渲染都会指向最新的count, ref本身却是固定的。
+	const countRef = useRef(0);
+	countRef.current = count //每次重新渲染都会指向最新的count, ref本身却是固定的。
 	useEffect(() => {
 		const interval = setInterval(() => {
-      setCount(countRef.current+1); 
+    	setCount(countRef.current+1); 
       // countRef.current++; // ref不是响应式，不会触发重新渲染
 		}, 1000);
     return () => clearInterval(interval);
@@ -192,3 +192,5 @@ export default function Demo() {
 - 对于组件的每个副本而言，这些信息都是本地的（外部变量则是共享的）。
 
 :::
+
+

@@ -2,6 +2,9 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+
+@import 'rehype-callout/css'; 
+
 @layer base {
     html{
         scroll-behavior: smooth;
@@ -31,6 +34,8 @@
         height: 1.5rem;
     }
 }
+
+/* rehype-autolink-headings */
 a._heading-anchor{
     vertical-align: text-bottom;
     margin-bottom: 0.1em;

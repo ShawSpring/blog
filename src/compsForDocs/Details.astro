@@ -1,0 +1,23 @@
+---
+// const title='DEEP DIVE'
+const {title = '深入探讨'} = Astro.props;
+// console.log(await Astro.slots.render('default'));
+---
+
+<details class="not-content my-12 rounded-2xl shadow-inner shadow-zinc-200 dark:shadow-zinc-700 relative \
+ dark:bg-opacity-20 dark:bg-purple-300 bg-purple-50"
+    open="">
+    <summary class="list-none p-8" tabindex="-1">
+        <h5 class="mb-4 uppercase font-bold flex items-center text-sm dark:text-purple-50 text-purple-900">
+            {title}
+        </h5>
+        <div class="mb-4">
+            <h4 id="how-to-manage-a-list-of-refs-using-a-ref-callback" 
+            class="mdx-heading text-xl font-bold text-primary dark:text-primary-dark \
+               leading-9 my-4">
+                <slot name="title" />
+            </h4>
+        </div>
+    </summary>
+    <slot />
+</details>
